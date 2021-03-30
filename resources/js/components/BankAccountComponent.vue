@@ -32,7 +32,7 @@
                         <td v-else-if="bank_account.account_type == 2">Current Account</td>
                         <td v-else>Joint Account</td>
                         <td>
-                            <button class="btn btn-success btn-sm">Edit</button>
+                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#createBankAccount" @click.prevent="editBankAccount(bank_account)">Edit</button>
                             <button class="btn btn-danger btn-sm" @click.prevent="deleteBankAccount(bank_account.id)">Delete</button>
                         </td>
                     </tr>
@@ -107,7 +107,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" @click.prevent="createBankAccount">Create</button>
+                            <button type="button" class="btn btn-primary" v-if="!form.id" @click.prevent="createBankAccount">Create</button>
+                            <button type="button" class="btn btn-primary" v-else @click.prevent="updateBankList">Update</button>
                         </div>
                     </div>
                 </div>
@@ -122,7 +123,7 @@
         data(){
             return{
                 form:{},
-                errors:{}
+                errors:{},
             }
         },
 
@@ -137,9 +138,21 @@
                 axios.post('/api/bank-account', this.form)
                     .then((result) => {
                         this.bankAccountList();
+                        this.form = {}
                     }).catch((error) => {
                     this.errors = error.response.data.errors
                 });
+            },
+            updateBankList(){
+                axios.put('/api/bank-account/'+this.form.id, this.form)
+                    .then((result) => {
+                        this.bankAccountList();
+                    }).catch((error) => {
+                    this.errors = error.response.data.errors
+                });
+            },
+            editBankAccount(bank_account){
+                this.form = bank_account
             },
             deleteBankAccount(id){
                 this.$store.dispatch('bankDelete', id)

@@ -1963,6 +1963,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "BankAccountComponent",
   data: function data() {
@@ -1983,9 +1984,23 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.post('/api/bank-account', this.form).then(function (result) {
         _this.bankAccountList();
+
+        _this.form = {};
       })["catch"](function (error) {
         _this.errors = error.response.data.errors;
       });
+    },
+    updateBankList: function updateBankList() {
+      var _this2 = this;
+
+      axios.put('/api/bank-account/' + this.form.id, this.form).then(function (result) {
+        _this2.bankAccountList();
+      })["catch"](function (error) {
+        _this2.errors = error.response.data.errors;
+      });
+    },
+    editBankAccount: function editBankAccount(bank_account) {
+      this.form = bank_account;
     },
     deleteBankAccount: function deleteBankAccount(id) {
       this.$store.dispatch('bankDelete', id);
@@ -37777,9 +37792,23 @@ var render = function() {
                   : _c("td", [_vm._v("Joint Account")]),
                 _vm._v(" "),
                 _c("td", [
-                  _c("button", { staticClass: "btn btn-success btn-sm" }, [
-                    _vm._v("Edit")
-                  ]),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success btn-sm",
+                      attrs: {
+                        "data-toggle": "modal",
+                        "data-target": "#createBankAccount"
+                      },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.editBankAccount(bank_account)
+                        }
+                      }
+                    },
+                    [_vm._v("Edit")]
+                  ),
                   _vm._v(" "),
                   _c(
                     "button",
@@ -38254,20 +38283,35 @@ var render = function() {
                     [_vm._v("Close")]
                   ),
                   _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "button" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.createBankAccount($event)
-                        }
-                      }
-                    },
-                    [_vm._v("Create")]
-                  )
+                  !_vm.form.id
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.createBankAccount($event)
+                            }
+                          }
+                        },
+                        [_vm._v("Create")]
+                      )
+                    : _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.updateBankList($event)
+                            }
+                          }
+                        },
+                        [_vm._v("Update")]
+                      )
                 ])
               ])
             ]

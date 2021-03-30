@@ -93,7 +93,27 @@ class BankAccountController extends Controller
      */
     public function update(Request $request, BankAccount $bankAccount)
     {
-        //
+        $request->validate([
+            'account_name'                  => 'required',
+            'financial_organization_id'     => 'required | integer',
+            'account_no'                    => 'required | integer',
+            'branch'                        => 'required',
+            'account_type'                  => 'required | integer',
+            'swift_code'                    => 'required',
+            'route_no'                      => 'required | integer',
+        ]);
+
+        $bank_account = $bankAccount->update([
+            'account_name'                  => $request->account_name,
+            'financial_organization_id'     => $request->financial_organization_id,
+            'account_no'                    => $request->account_no,
+            'branch'                        => $request->branch,
+            'account_type'                  => $request->account_type,
+            'swift_code'                    => $request->swift_code,
+            'route_no'                      => $request->route_no,
+        ]);
+
+        return response()->json($bank_account);
     }
 
     /**
@@ -104,7 +124,6 @@ class BankAccountController extends Controller
      */
     public function destroy(BankAccount $bankAccount)
     {
-        dd($bankAccount);
         $bankAccount = BankAccount::find($bankAccount);
         $bankAccount->delete();
         return $this->index();
