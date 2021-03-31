@@ -35,7 +35,7 @@ export const store = new Vuex.Store({
             });
         },
         bankDelete(context, payload){
-            axios.delete('/api/bank-list/'+payload)
+            axios.delete('/api/bank-account/'+payload)
                 .then((result) => {
                     context.commit('bankList', result.data.banks)
                 }).catch((error) => {
